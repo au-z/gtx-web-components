@@ -1,0 +1,46 @@
+<script>
+  window.customElements.define('my-gravatar', class extends HTMLElement {
+    constructor() {
+      super()
+
+      let shadowRoot = this.attachShadow({mode: 'open'})
+      shadowRoot.appendChild(this.template().content.clientNode(true))
+    }
+
+    get email() {
+      return this.hasAttribute('email')
+    }
+
+    set email(email) {
+      if(email) {
+        this.setAttribute('email', email)
+      } else {
+        this.removeAttribute('email')
+      }
+    }
+
+    get size() {
+      return this.hasAttribute('size')
+    }
+
+    set size(size) {
+      this.setAttribute('size', 80)
+    }
+
+    template() {
+      let template = document.createElement('template')
+      template.innerHTML = `
+        <script src="js/md5.min.js"></script>
+        <style>
+          .my-gravatar {
+            border: 1px solid blue
+          }
+        </style>
+        <div class="my-gravatar">
+          <img src="http://www.gravatar.com/avatar/${md5(this.email)}.jpg?s=${size}"/>
+        </div>
+      `
+      return template
+    }
+  })
+</script>

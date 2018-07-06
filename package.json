@@ -1,0 +1,21 @@
+{
+  "name": "gtx-web-components",
+  "version": "1.0.0",
+  "description": "Demonstrations of various web components and tooling",
+  "main": "index.js",
+  "scripts": {
+    "demo": "http-server . -p 9991 -o",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "23.2.0"
+  },
+  "keywords": [
+    "web",
+    "components",
+    "gtx",
+    "protolabs"
+  ],
+  "author": "Austin Martin <auz.martin@gmail.com>",
+  "license": "ISC"
+}

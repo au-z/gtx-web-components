@@ -1,0 +1,31 @@
+<script>
+window.customElements.define('hello-world', class extends HTMLElement {
+  constructor() {
+    super()
+
+    this.addEventListener('click', (e) =>
+      console.log({
+        x: e.clientX,
+        y: e.clientY
+      })
+    )
+    let shadowRoot = this.attachShadow({mode: 'open'})
+    shadowRoot.appendChild(this.template().content.cloneNode(true))
+  }
+
+  template() {
+    let template = document.createElement('template')
+    template.innerHTML = `
+      <style>
+        .red-annoying {
+          color: red;
+          font-size: 4em;
+          cursor: pointer;
+        }
+      </style>
+      <h1 class="red-annoying">Hello World</h1>
+    `
+    return template
+  }
+})
+</script>
