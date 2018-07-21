@@ -1,0 +1,92 @@
+<template id="hello-gtx">
+	<style>
+		:host {
+			position: relative;
+			padding: 16px;
+			background: white;
+		}
+		:host h1 {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+		}
+		:host > .wrapper {
+			position: relative;
+			display: inline-block;
+			padding: 16px 32px;
+			border: 1px solid #eee;
+			box-shadow: 2px 12px 30px 4px rgba(0, 0, 0, 0.05), 3px 8px 5px rgba(0, 0, 0, 0.03), 2px 3px 4px -2px rgba(0, 0, 0, 0.08), 0px 20px 20px -20px rgba(10, 20, 50, 0.12), 0px -5px 5px 0px white;
+		}
+		:host button.pause {
+			position: absolute;
+			right: 8px;
+			top: 8px;
+			width: 16px;
+			height: 16px;
+			border: 0;
+			border-radius: 16px;
+			background: #ee4422;
+			cursor: pointer;
+		}
+	</style>
+
+	<div class="wrapper">
+		<h1>HELLO GTX</h1><br>
+		<button class="pause"></button>
+		<br><br>
+		<slot></slot>
+	</div>
+</template>
+
+<script>
+const template = document.currentScript.ownerDocument.querySelector('#hello-gtx');
+
+window.customElements.define('hello-gtx', class extends HTMLElement { 
+	constructor() {
+		super();
+		this.root = this.attachShadow({mode: 'closed'});
+		this.root.appendChild(template.content.cloneNode(true));
+		
+		this.pauseButton = this.root.querySelector('button.pause')
+		this.updatePauseButton()
+		this.pauseButton.addEventListener('click', () => {
+			this.pause = !this.pause
+			this.updatePauseButton()
+		})
+	}
+	
+	//triggeres the attributeChangedCallback each time these attributes change
+	static get observedAttributes() {
+		return ['theme', 'pause'];
+	}
+	
+	get pause() {
+		return this.hasAttribute('pause')
+	}
+	
+	set pause(val) {
+		if(val) {
+			this.setAttribute('pause', '')
+		} else {
+			this.removeAttribute('pause')
+		}
+	}
+	
+	updateTheme(oldValue, newValue) {
+		if(this.pause) return
+		this.root.querySelector('.wrapper h1').style.color = newValue
+	}
+	
+	updatePause(oldValue, newValue) {
+		this.pause = newValue
+	}
+	
+	updatePauseButton() {
+		this.pauseButton.style.backgroundColor = (!this.pause) ? '#ee4422' : '#66ee99'
+	}
+	
+	attributeChangedCallback(name, oldValue, newValue) {
+		if(name === 'theme') this.updateTheme(oldValue, newValue)
+	}
+})
+</script>

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "demo": "http-server . -p 9991 -o",
+    "serve": "browser-sync start -s -f . --no-notify --port 9992",
     "test": "jest"
   },
   "devDependencies": {

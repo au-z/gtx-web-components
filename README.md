@@ -6,7 +6,8 @@
 Hello, welcome to 2011.
 
 - Increased demand for rich brower experience
-- Facebook, Gmail, NYTimes, WSJ
+- Shift from informational to interactive
+- Websites as documents vs web apps as tools
 
 ### Can do!
 
@@ -25,14 +26,22 @@ Hello, welcome to 2011.
 ### Barking up the wrong tree
 
 - HTML and CSS are not scoped, everything is global
-- We've destroyed "semantic HTML"
+  - Issues are primarily ones of scoping
+  - I cannot trust that my changes are atomic
+- We've obliterated "semantic HTML"
+  - Gmail
 - Offloading our descriptive web apps to JS
 - ~~Model driven layouts~~
 
 ### No "Standards"
 
 - We're building HTML with primitive data types
-- Banging rocks together while the W3C
+- Banging rocks together
+
+### Two Options (not mutually exclusive)
+
+1. We evolve the platform
+2. Compilers and frameworks
 
 ### Consider, if you will, the lowly \<button>
 
@@ -40,7 +49,7 @@ Hello, welcome to 2011.
 - hover, active, focus states
 - click handler
 - disabled attribute
-- Not so primitive
+- Not so primitive after all
 
 ### Extensible HTML
 

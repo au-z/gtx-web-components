@@ -1,0 +1,92 @@
+<template id="todo-list-item">
+	<style>
+		:host {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		:host p {
+			display: inline-block;
+			padding: 0;
+			margin: 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		:host .actions {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		:host input[type="checkbox"] {
+			margin: 8px;
+			width: 18px;
+			height: 18px;
+		}
+		:host([complete]) {
+			color: #aaa;
+		}
+		:host icon-trash-can {
+			margin-left: 16px;
+			margin-top: 1px;
+			cursor: pointer;
+			fill: #333;
+		}
+		:host([complete]) icon-trash-can {
+			fill: #888;
+		}
+	</style>
+	<p><slot></slot></p>
+	<div class="actions">
+		<input type="checkbox"/>
+		<icon-trash-can class="delete" width="24"></icon-trash-can>
+	</div>
+</template>
+
+<script>
+const t_todoListItem = document.currentScript.ownerDocument.querySelector('#todo-list-item')
+
+window.customElements.define('todo-list-item', class extends HTMLElement {
+	constructor() {
+		super()
+		let me = this
+
+		this.root = this.attachShadow({mode: 'open'})
+		this.root.appendChild(t_todoListItem.content.cloneNode(true))
+
+		this.checkbox = this.root.querySelector('input[type="checkbox"]')
+		if(this.complete) this.checkbox.checked = true
+		this.checkbox.addEventListener('change', () => {
+			this.updateComplete(this.checkbox.checked)
+			this.dispatchEvent(new CustomEvent('task:complete', {
+				detail: {
+					task: this,
+					complete: this.checkbox.checked,
+				},
+				bubble: true,
+			}))
+		})
+
+		this.btnDelete = this.root.querySelector('icon-trash-can.delete')
+		this.btnDelete.addEventListener('click', () => {
+			this.remove()
+			this.dispatchEvent(new CustomEvent('task:delete'))
+		})
+	}
+
+	get complete() {return this.hasAttribute('complete')}
+	set complete(bool) {
+		if(bool) {
+			this.setAttribute('complete', '')
+		} else {
+			this.removeAttribute('complete')
+		}
+	}
+
+	updateComplete(bool) {
+		this.complete = bool
+	}
+})
+</script>
+
+<link rel="import" href="../icons/icon-trash-can.html">

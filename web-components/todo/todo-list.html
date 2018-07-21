@@ -1,0 +1,107 @@
+<template id="todo-list">
+	<style>
+		:host {
+			display: flex;
+			flex-direction: column;
+			margin: 0 16px;
+		}
+
+		:host .tasks {
+			display: block;
+			padding-top: 16px;
+		}
+		
+		:host div.hint {
+			width: 100%;
+			height: 32px;
+			border: 1px solid #eee;
+			text-align: center;
+			line-height: 32px;
+			color: #7af;
+			font-size: 0.9em;
+		}
+
+		:host h5 {
+			color: #444;
+			font-weight: normal;
+			margin: 12px 0 2px 0;
+		}
+
+		::slotted(todo-list-item) {
+			padding: 8px 0;
+			border-top: 2px solid #eee;
+		}
+
+		::slotted(todo-list-item:first-child) {
+			border-top: none;
+		}
+	</style>
+	<todo-list-create></todo-list-create>
+	<div class="hint">
+		<span>Add a to-do to get started.</span>
+	</div>
+	<slot name="incomplete"></slot>
+	<h5>Complete</h5>
+	<slot name="complete"></slot>
+</template>
+
+<script>
+		const t_amTodo = document.currentScript.ownerDocument.querySelector('#todo-list')
+		window.customElements.define('todo-list', class extends HTMLElement {
+			constructor() {
+				super()
+		
+				this.root = this.attachShadow({mode: 'open'})
+				this.root.appendChild(t_amTodo.content.cloneNode(true))
+
+				this.hint = this.root.querySelector('div.hint')
+
+				this.listenForCreatedTasks()
+				this.listenForTasks()
+			}
+
+			get tasks() {
+				return this.querySelectorAll('todo-list-item') || []
+			}
+
+			taskDeleted(event) {
+				console.log(this.tasks)
+				this.toggleHint(this.tasks.length < 1)
+			}
+			
+			completeTask(event) {
+				event.detail.task.setAttribute('slot', event.detail.complete ? 'complete' : 'incomplete')
+				this.removeEventListener('task:complete', this.completeTask)
+			}
+
+			listenForCreatedTasks() {
+				this.root.querySelector('todo-list-create').addEventListener('task:create', (event) => {
+					const el = document.createElement('todo-list-item')
+					el.innerHTML = event.detail.task
+					el.setAttribute('slot', 'incomplete')
+					this.appendChild(el)
+					this.listenForTasks(el)
+				})
+			}
+
+			listenForTasks(selector) {
+				if(typeof selector === 'object') {
+					selector.addEventListener('task:complete', this.completeTask)
+					selector.addEventListener('task:delete', () => this.taskDeleted())
+					this.toggleHint(false)
+					return
+				}
+
+				this.toggleHint(this.tasks.length < 1)
+				this.tasks.forEach((t) => t.addEventListener('task:complete', this.completeTask))
+				this.tasks.forEach((t) => t.addEventListener('task:delete', () => this.taskDeleted()))
+			}
+
+			toggleHint(bool) {
+				console.log('show hint? ', bool)
+				this.hint.style.display = (bool) ? 'block' : 'none'
+			}
+		})
+</script>
+
+<link rel="import" href="./todo-list-create.html">

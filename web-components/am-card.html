@@ -1,0 +1,55 @@
+<template id="am-card">
+	<style>
+		:host .card{
+			display: block;
+			width: 100%;
+			height: 100%;
+			padding-bottom: 16px;
+			border: 2px solid #eee;
+			border-radius: 4px;
+			background: white;
+		}
+
+		::slotted(am-card-header) {
+			display: block;
+			margin: 0 16px;
+			width: calc(100% - 32px);
+		}
+	</style>
+	<div class="card">
+		<slot></slot>
+		<slot name="content"></slot>
+	</div>
+</template>
+
+<script>
+const t_amCard = document.currentScript.ownerDocument.querySelector('#am-card')
+
+window.customElements.define('am-card', class extends HTMLElement {
+	constructor() {
+		super()
+
+		console.log(this.dim)
+
+		this.root = this.attachShadow({mode: 'open'})
+		this.root.appendChild(t_amCard.content.cloneNode(true))
+		
+		const card = this.root.querySelector('.card')
+		card.style.borderTop = `4px solid ${this.accent}`
+		if(this.dim) {
+			card.style.width = this.dim[0]
+			card.style.height = this.dim[1]
+		}
+		card.style.background = '#fff';
+	}
+
+	get accent() {return this.getAttribute('accent')}
+	get dim() {
+		return this.getAttribute('dim').split(',').map((d) => d.trim())
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		if(name === 'accent') this.updateAccent(oldValue, newValue)
+	}
+})
+</script>

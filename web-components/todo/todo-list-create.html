@@ -1,0 +1,70 @@
+<template id="todo-list-create">
+	<style>
+		:host {
+			display: flex;
+			justify-content: start;
+			padding: 16px 0;
+		}
+		:host .new-task {
+			position: relative;
+			width: calc(100% - 60px);
+		}
+		:host input[type="text"] {
+			box-sizing: border-box;
+			height: 32px;
+			width: 100%;
+			border: 1px solid #dadada;
+			background: #fff;
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+			padding: 8px;
+		}
+		:host .new-task > button {
+			box-sizing: border-box;
+			position: absolute;
+			right: -60px;
+			top: 0;
+			height: 100%;
+			width: 60px;
+			background: linear-gradient(0deg, #eee, #fff);
+			border: 1px solid #dadada;
+			border-left: none;
+			text-align: center;
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+			line-height: 1em;
+			font-size: 1.8em;
+			color: #444;
+			cursor: pointer;
+		}
+	</style>
+	<div class="new-task">
+		<input class="task" type="text">
+		<button class="create">+</button>
+	</div>
+</template>
+
+<script>
+const t_todoListCreate = document.currentScript.ownerDocument.querySelector('#todo-list-create')
+	
+window.customElements.define('todo-list-create', class extends HTMLElement {
+	constructor() {
+		super()
+
+		this.root = this.attachShadow({mode: 'open'})
+		this.root.appendChild(t_todoListCreate.content.cloneNode(true))
+
+		this.inputTask = this.root.querySelector('input.task')
+		this.btnCreate = this.root.querySelector('button.create')
+		this.btnCreate.addEventListener('click', () => {
+			const task = this.inputTask.value.trim()
+			if(task === '') return
+			this.dispatchEvent(new CustomEvent('task:create', {
+				detail: {task},
+				bubble: true,
+			}))
+			this.inputTask.value = null
+		})
+	}
+})
+</script>

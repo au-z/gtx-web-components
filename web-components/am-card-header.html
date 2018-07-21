@@ -1,0 +1,24 @@
+<template id="am-card-header">
+	<style>
+		:host {
+			padding: 12px 0 2px 0;
+			border-bottom: 1px solid #eee;
+			color: #454646;
+			font-size: 1.7em;
+		}
+	</style>
+	<slot class="card-header"></slot>
+</template>
+
+<script>
+const t_amCardHeader = document.currentScript.ownerDocument.querySelector('#am-card-header')
+window.customElements.define('am-card-header', class extends HTMLElement {
+	constructor() {
+		super()
+
+		this.root = this.attachShadow({mode: 'open'})
+		this.root.appendChild(t_amCardHeader.content.cloneNode(true))
+	}
+})
+
+</script>
